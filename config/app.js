@@ -8,7 +8,7 @@ module.exports.init = function init(callback) {
 
 module.exports.start = function start(callback) {
 	this.init((app) => {
-		app.listen(3000, () => {
+		app.listen(3001, () => {
 			console.log('Finished execution');
 			if (callback) callback(app);
 		});
