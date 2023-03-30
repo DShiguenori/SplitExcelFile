@@ -3,3 +3,6 @@ excelIn
 excelOut
 .vscode
 .env
+output_files/*
+excel_to_split
+excel_to_join

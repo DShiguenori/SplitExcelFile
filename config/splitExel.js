@@ -8,8 +8,13 @@ module.exports.start = async () => {
 	console.log('---------------------- Starting ----------------------');
 
 	// Folder configuration:
-	let EXCEL_INPUT_FOLDER = path.join(projectRoot, process.env.EXCEL_INPUT_FOLDER);
-	let EXCEL_OUTPUT_FOLDER = path.join(projectRoot, process.env.EXCEL_OUTPUT_FOLDER);
+	let EXCEL_INPUT_FOLDER = path.join(projectRoot, process.env.EXCEL_FILES_TO_SPLIT);
+	let EXCEL_OUTPUT_FOLDER = path.join(projectRoot, 'output_files', 'split');
+
+	// Create the output folder if it does not exist
+	if (!fs.existsSync(EXCEL_OUTPUT_FOLDER)) {
+		fs.mkdirSync(EXCEL_OUTPUT_FOLDER, { recursive: true });
+	}
 
 	let NUM_ROWS_EACH_FILE = parseInt(process.env.NUMBER_ROWS_OUTPUT);
 
@@ -38,7 +43,10 @@ module.exports.start = async () => {
 					await copyRow(row, currentRowInOutput, outSheet);
 
 					if (currentRowInOutput === NUM_ROWS_EACH_FILE || rowNumber === rowCount) {
-						const outputFilename = `${EXCEL_OUTPUT_FOLDER}\\out_${file}_${currentFileCount}.xlsx`;
+						const outputFilename = `${EXCEL_OUTPUT_FOLDER}\\${file.slice(0, -5)}_${currentFileCount
+							.toString()
+							.padStart(3, '0')}.xlsx`;
+
 						await workbookOutput.xlsx.writeFile(outputFilename);
 						console.log(`FILE SAVED ${outputFilename}`);
 
