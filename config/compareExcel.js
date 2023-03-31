@@ -1,9 +1,10 @@
 const Excel = require('exceljs');
 const fs = require('fs');
+require('dotenv').config();
 const path = require('path');
 const projectRoot = path.dirname(require.main.filename);
 
-module.exports.compare = async () => {
+module.exports.start = async () => {
 	console.log('---------------------- Starting Comparison ----------------------');
 
 	const EXCEL_COMPARE_FOLDER = path.join(projectRoot, process.env.EXCEL_FILES_TO_COMPARE);
