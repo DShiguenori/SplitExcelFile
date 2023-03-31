@@ -8,19 +8,18 @@ module.exports.start = async () => {
 	console.log('---------------------- Starting ----------------------');
 
 	// Folder configuration:
-	let EXCEL_INPUT_FOLDER = path.join(projectRoot, process.env.EXCEL_FILES_TO_SPLIT);
-	let EXCEL_OUTPUT_FOLDER = path.join(projectRoot, 'output_files', 'split');
+	let EXCEL_INPUT_FOLDER = path.join(projectRoot, process.env.EXCEL_FILES_TO_JOIN);
+	let EXCEL_OUTPUT_FOLDER = path.join(projectRoot, 'output_files', 'join');
 
 	// Create the output folder if it does not exist
 	if (!fs.existsSync(EXCEL_OUTPUT_FOLDER)) {
 		fs.mkdirSync(EXCEL_OUTPUT_FOLDER, { recursive: true });
 	}
 
-	let NUM_ROWS_EACH_FILE = parseInt(process.env.NUMBER_ROWS_OUTPUT);
-
 	let files = fs.readdirSync(EXCEL_INPUT_FOLDER);
 
-	// Leitura para cada Arquivo (filial)
+	// Join all files in the input folder:
+	let workbookOutput = new Excel.Workbook();
 	for (let file of files) {
 		let excelPathFile = `${EXCEL_INPUT_FOLDER}\\${file}`;
 		console.log(`-> READING...   ${excelPathFile} `);
@@ -32,51 +31,22 @@ module.exports.start = async () => {
 		excelInput.eachSheet((inSheet, sheetId) => {
 			let rowCount = inSheet.rowCount;
 
-			(async () => {
-				let currentFileCount = 1;
-				let currentRowInOutput = 1;
-				let workbookOutput = new Excel.Workbook();
-				let outSheet = workbookOutput.addWorksheet(inSheet.name);
+			let outSheet = workbookOutput.getWorksheet(inSheet.name);
+			if (!outSheet) {
+				outSheet = workbookOutput.addWorksheet(inSheet.name);
+			}
 
-				for (let rowNumber = 1; rowNumber <= rowCount; rowNumber++) {
-					const row = inSheet.getRow(rowNumber);
-					await copyRow(row, currentRowInOutput, outSheet);
-
-					if (currentRowInOutput === NUM_ROWS_EACH_FILE || rowNumber === rowCount) {
-						const outputFilename = `${EXCEL_OUTPUT_FOLDER}\\${file.slice(0, -5)}_${currentFileCount
-							.toString()
-							.padStart(3, '0')}.xlsx`;
-
-						await workbookOutput.xlsx.writeFile(outputFilename);
-						console.log(`FILE SAVED ${outputFilename}`);
-
-						currentFileCount++;
-						currentRowInOutput = 1;
-
-						workbookOutput = new Excel.Workbook();
-						outSheet = workbookOutput.addWorksheet(inSheet.name);
-					} else {
-						currentRowInOutput++;
-					}
-				}
-			})();
+			for (let rowNumber = 1; rowNumber <= rowCount; rowNumber++) {
+				const row = inSheet.getRow(rowNumber);
+				const newRow = outSheet.addRow(row.values);
+				newRow.commit();
+			}
 		});
 	}
-	console.log('---------------------- END READING FOLDERS AND THEIR FILES ----------------------');
+
+	const outputFilename = `${EXCEL_OUTPUT_FOLDER}\\joined_files.xlsx`;
+	await workbookOutput.xlsx.writeFile(outputFilename);
+	console.log(`JOINED FILES SAVED ${outputFilename}`);
+
+	console.log('---------------------- END JOINING FILES ----------------------');
 };
-
-async function copyRow(row, rowNumber, outSheet) {
-	// Copy the row to the output sheet
-	const newRow = outSheet.getRow(rowNumber);
-	newRow.values = row.values;
-	newRow.commit();
-}
-
-// Read a cell, outputs a string
-function readCellString(row, number) {
-	let rowValue = row.values[number];
-
-	if (rowValue == null) return null;
-
-	return rowValue.toString();
-}

@@ -6,6 +6,7 @@
 	"scripts": {
 		"start-join": "node server.js --mode=join",
 		"start-split": "node server.js --mode=split",
+		"start-compare": "node server.js --mode=compare",
 		"test": "npm run test"
 	},	
 	"author": "Danilo Uema",

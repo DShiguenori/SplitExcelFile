@@ -12,6 +12,9 @@ module.exports.initExcel = function () {
 	} else if (mode === 'split') {
 		const splitExcel = require('./splitExel');
 		splitExcel.start();
+	} else if (mode === 'compare') {
+		const compareExcel = require('./compareExel');
+		compareExcel.start();
 	}
 };
 
