@@ -4,18 +4,9 @@ const bodyParser = require('body-parser');
 module.exports.initExcel = function () {
 	const argv = require('minimist')(process.argv.slice(2));
 	const mode = argv.mode;
-	console.log(`Running in "${mode}" mode`);
 
-	if (mode === 'join') {
-		const joinExel = require('./joinExcel');
-		joinExel.start();
-	} else if (mode === 'split') {
-		const splitExcel = require('./splitExel');
-		splitExcel.start();
-	} else if (mode === 'compare') {
-		const compareExcel = require('./compareExcel');
-		compareExcel.start();
-	}
+	const readV2ExcelFiles = require('./readV2ExcelFiles');
+	readV2ExcelFiles.start();
 };
 
 module.exports.init = function () {
