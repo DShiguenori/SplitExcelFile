@@ -1,6 +1,9 @@
-# AudioControlWebMigrateV2toExcel
+# SplitExcelFile
 
-This project will read the excel files obtained from AudioControlV2 database and will create a new excel that is formated for import to the AudioControlWeb system.
+This mini-project is used to split or join excel files.
+Maybe I'll expand it to run other batches.
+It's highly customized for my needs.
+Feel free to copy it and edit it.
 
 ### Reminder!!!
 
@@ -8,7 +11,16 @@ This project will read the excel files obtained from AudioControlV2 database and
 
 ### To Run the project
 
-> npm run start
+If you wanna split a big file, set the .env config NUMBER_ROWS_OUTPUT
+Put the big excel file in the folder **excel_to_split** (create it it you didnt yet) in the root of your repository.
+Then run
+
+> npm run start-split
+
+If you want to join files a single excel, you need to put the files in the **excel_to_join** folder.
+Then run
+
+> npm run start-join
 
 ### Order of execution:
 

@@ -4,7 +4,8 @@
 	"description": "Update the excel file addresses with the lat-lon coordinates",
 	"main": "app.js",
 	"scripts": {
-		"start-join": "node server.js",
+		"start-join": "node server.js --mode=join",
+		"start-split": "node server.js --mode=split",
 		"start-compare": "node server.js --mode=compare",
 		"test": "npm run test"
 	},	
